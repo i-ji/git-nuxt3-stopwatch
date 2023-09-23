@@ -1,6 +1,6 @@
 <template>
-  <div class="my-5 mx-auto w-[270px] bg-white p-[15px] text-center">
-    <div class="bg-gray-300 h-[120px] leading-[120px] text-[40px] mb-[15px]">
+  <div class="my-5 mx-auto w-[360px] bg-white p-5 text-center">
+    <div class="bg-gray-300 h-40 leading-[160px] text-[48px] mb-5">
       {{ timer }}
     </div>
     <div class="flex justify-between">
@@ -19,6 +19,11 @@
         @timerAction="reset"
         :disabledBtn="disabledResetBtn"
       ></Button>
+      <Button
+        btnName="Rap"
+        @timerAction="rap"
+        :disabledBtn="disabledRapBtn"
+      ></Button>
     </div>
   </div>
 </template>
@@ -30,6 +35,8 @@ button:disabled {
 </style>
 
 <script setup lang="ts">
+const emits = defineEmits(["rap"]);
+
 const timer = ref<string>("00:00.000");
 
 let startTime: number;
@@ -53,23 +60,27 @@ function countUp() {
 let disabledStartBtn = ref<boolean>(false);
 let disabledStopBtn = ref<boolean>(true);
 let disabledResetBtn = ref<boolean>(true);
+let disabledRapBtn = ref<boolean>(false);
 
 function setBtnStateInitial() {
   disabledStartBtn.value = false;
   disabledStopBtn.value = true;
   disabledResetBtn.value = true;
+  disabledRapBtn.value = true;
 }
 
 function setBtnStateRunning() {
   disabledStartBtn.value = true;
   disabledStopBtn.value = false;
   disabledResetBtn.value = true;
+  disabledRapBtn.value = false;
 }
 
 function setBtnStateStopped() {
   disabledStartBtn.value = false;
   disabledStopBtn.value = true;
   disabledResetBtn.value = false;
+  disabledRapBtn.value = true;
 }
 
 setBtnStateInitial();
@@ -90,5 +101,9 @@ const reset = () => {
   setBtnStateInitial();
   timer.value = "00:00.000";
   elapsedTime = 0;
+};
+
+const rap = () => {
+  emits("rap");
 };
 </script>
