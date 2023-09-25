@@ -35,72 +35,25 @@ button:disabled {
 </style>
 
 <script setup lang="ts">
-const emits = defineEmits(["rap"]);
-
-const timer = ref<string>("00:00.000");
-
-let startTime: number;
-let timeoutId: number;
-let elapsedTime: number = 0;
-
-function countUp() {
-  const d = ref<number>(Date.now() - startTime + elapsedTime);
-  const date = ref<Date>(new Date(d.value));
-  const m = String(date.value.getMinutes()).padStart(2, "0");
-  const s = String(date.value.getSeconds()).padStart(2, "0");
-  const ms = String(date.value.getMilliseconds()).padStart(3, "0");
-
-  timer.value = `${m}:${s}.${ms}`;
-
-  timeoutId = window.setTimeout(() => {
-    countUp();
-  }, 10);
-}
-
-let disabledStartBtn = ref<boolean>(false);
-let disabledStopBtn = ref<boolean>(true);
-let disabledResetBtn = ref<boolean>(true);
-let disabledRapBtn = ref<boolean>(false);
-
-function setBtnStateInitial() {
-  disabledStartBtn.value = false;
-  disabledStopBtn.value = true;
-  disabledResetBtn.value = true;
-  disabledRapBtn.value = true;
-}
-
-function setBtnStateRunning() {
-  disabledStartBtn.value = true;
-  disabledStopBtn.value = false;
-  disabledResetBtn.value = true;
-  disabledRapBtn.value = false;
-}
-
-function setBtnStateStopped() {
-  disabledStartBtn.value = false;
-  disabledStopBtn.value = true;
-  disabledResetBtn.value = false;
-  disabledRapBtn.value = true;
-}
-
-setBtnStateInitial();
+const emits = defineEmits(["start", "stop", "reset", "rap"]);
+const props = defineProps([
+  "timer",
+  "disabledStartBtn",
+  "disabledStopBtn",
+  "disabledResetBtn",
+  "disabledRapBtn",
+]);
 
 const start = () => {
-  setBtnStateRunning();
-  startTime = Date.now();
-  countUp();
+  emits("start");
 };
 
 const stop = () => {
-  setBtnStateStopped();
-  clearTimeout(timeoutId);
-  elapsedTime += Date.now() - startTime;
+  emits("stop");
 };
 
 const reset = () => {
-  setBtnStateInitial();
-  timer.value = "00:00.000";
-  elapsedTime = 0;
+  emits("reset");
 };
 
 const rap = () => {
