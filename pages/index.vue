@@ -81,14 +81,45 @@ const stop = () => {
 };
 
 // rap処理
-// let intervalTime: number = 0;
 const logs = ref<any[]>([]);
+let previousTime: number = 0;
+
 const rap = () => {
-  let log = reactive({
-    rap: "ラップ",
-    time: timer.value,
-  });
-  logs.value.push(log);
+  const currentTime = Date.now();
+  const lapTime = currentTime - previousTime;
+  previousTime = currentTime;
+
+  if (startTime) {
+    if (logs.value.length !== 0) {
+      const m = String(Math.floor(lapTime / 1000 / 60) % 60).padStart(2, "0");
+      const s = Math.floor(lapTime / 1000) % 60;
+      const ms = lapTime / 1000 - s;
+      const sMs = String((s + ms).toFixed(3)).padStart(6, "0");
+      const rapTime = `${m}:${sMs}`;
+
+      const log = {
+        rap: "ラップ",
+        time: rapTime,
+      };
+
+      logs.value.push(log);
+    } else {
+      const d = Date.now() - startTime;
+
+      const m = String(Math.floor(d / 1000 / 60) % 60).padStart(2, "0");
+      const s = Math.floor(d / 1000) % 60;
+      const ms = d / 1000 - s;
+      const sMs = String((s + ms).toFixed(3)).padStart(6, "0");
+      const rapTime = `${m}:${sMs}`;
+
+      const log = {
+        rap: "ラップ",
+        time: rapTime,
+      };
+
+      logs.value.push(log);
+    }
+  }
 };
 
 // reset処理
